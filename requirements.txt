@@ -3,4 +3,5 @@ matplotlib
 scikit-learn
 seaborn
 openpyxl
+jinja2
 
