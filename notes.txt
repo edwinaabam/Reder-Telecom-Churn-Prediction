@@ -12,3 +12,9 @@ should activate easily- hopefully with no problems
  the activate file needs no extension in git bash
 
  use command: source C:/Users/../reder-prediction/myenv/Scripts/activate
+
+
+
+
+ -----
+ 
