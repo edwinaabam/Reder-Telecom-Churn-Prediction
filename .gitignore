@@ -2,6 +2,9 @@
 
 # add myenv folder
 myenv
+__pycache__/
+*.py[cod]
+
 
 
 

@@ -4,4 +4,9 @@ scikit-learn
 seaborn
 openpyxl
 jinja2
+ipykernel   
+fastapi
+pydantic
+uvicorn
+python-multipart
 
