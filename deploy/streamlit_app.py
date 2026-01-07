@@ -4,7 +4,7 @@ import json
 
 st.title("Telecom Customer Churn Prediction")
 
-API_URL = "http://127.0.0.1:8000/churn-predict"
+API_URL = "http://localhost:8000/churn-predict"
 
 st.header("Customer Details")
 
