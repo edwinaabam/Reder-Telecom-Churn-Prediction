@@ -1,9 +1,13 @@
 .env
+*.csv
+*.xlsx
 
 # add myenv folder
 myenv/
 __pycache__/
 *.py[cod]
+
+notes and files/
 
 
 

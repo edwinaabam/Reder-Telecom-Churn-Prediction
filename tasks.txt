@@ -1,8 +1,0 @@
-
-Task1:
-Name and describe the basic  file structure for undertaking a data science project
-
-Task2
-# Use the different types of encoding to encode the variables in the data
-
-deadline; tomorrow evening

@@ -1,6 +1,12 @@
 # API is a means of communication between the backend and front end. 
 # # basically  exchange of data between the fron and back
 
+import sys
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))
+
 from fastapi import FastAPI
 import pickle
 import json
@@ -10,6 +16,9 @@ from DataCleaning.clean import clean_data
 from typing import List, Dict, Any
 import os
 import uvicorn
+import sys
+from pathlib import Path
+
 
 app = FastAPI(title= "Reder Prediction API", version="1.0")
 
@@ -104,32 +113,73 @@ class PredictionRequest(BaseModel):
 ## Uitlity functions
 ##################################
 
+#def load_assets():
+  #  model_path = os.path.join('model', 'model.pkl')
+   # with open(model_path, "rb") as f:
+    #    model = pickle.load(f)
+    
+   # schema_path = os.path.join('model', 'schema.json')
+   # with open(schema_path, "r") as f:
+    #    schema = json.load(f)
+     #   feature_schema = schema['model_schema']  
+
+      #  return model, feature_schema
+
+
 def load_assets():
-    model_path = os.path.join('model', 'model.pkl')
+    model_path = BASE_DIR / "model" / "model.pkl"
     with open(model_path, "rb") as f:
         model = pickle.load(f)
-    
-    schema_path = os.path.join('model', 'schema.json')
+
+    schema_path = BASE_DIR / "model" / "schema.json"
     with open(schema_path, "r") as f:
         schema = json.load(f)
-        feature_schema = schema['model_schema']  
-        return model, feature_schema
+        feature_schema = schema["model_schema"]
+
+    return model, feature_schema
 
 
 
 @app.post("/churn-predict")
-def predict(req: PredictionRequest, res: List):
+def predict(req: PredictionRequest):
     data = pd.DataFrame(req.records)
+
     
+    EXPECTED_COLS = [
+        "Frequency", "Recency_days", "ActionsLast30Days",
+        "ActiveInLastWeek", "num_calls", "num_emails",
+        "num_chats", "Logins", "PageViews", "NPS", "Rating"
+    ]
+
+    for col in EXPECTED_COLS:
+        if col not in data.columns:
+            data[col] = 0
+
     data = clean_data(data)
-    
+
     model, feature_schema = load_assets()
-    
+
     data = data.reindex(columns=feature_schema, fill_value=0)
+
+    # Prediction
+    prediction = int(model.predict(data)[0])
+
+    # Probabilities
+    proba = model.predict_proba(data)[0]
+    non_churn = float(proba[0])
+    churn = float(proba[1])
     
-    predictions = model.predict(data)
+
+    return {
+        "prediction_label": prediction,                 # 0 or 1
+        "prediction_class": "No Churn" if prediction == 0 else "Churn",
+        "churn_probability": churn,
+        "non_churn_probability": non_churn
+    }
+
+    #return {"churn_probability": probs.tolist()}
     
-    return {"predictions": predictions.tolist()}
+    # return {"predictions": predictions.tolist()}
     
 
 ##############################

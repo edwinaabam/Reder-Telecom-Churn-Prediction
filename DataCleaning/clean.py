@@ -22,8 +22,12 @@ def convert_dtype(data: pd.DataFrame) -> pd.DataFrame:
                    'FirstActionTime','LastActionTime','most_recent_action_date','LastEmailSentDate',
                    'LastEmailOpenedDate','LastEmailClickedDate']
     
+    #for col in col_to_date:
+        #data[col] = pd.to_datetime(data[col], errors='coerce')
+    
     for col in col_to_date:
-        data[col] = pd.to_datetime(data[col], errors='coerce')
+        if col in data.columns:
+            data[col] = pd.to_datetime(data[col], errors="coerce")
 
     return data
     
@@ -38,9 +42,9 @@ def feature_engineering(data: pd.DataFrame) -> pd.DataFrame:
     date_col_to_engineer = data.select_dtypes(include = 'datetime64').columns.tolist()  
     
     for col in date_col_to_engineer:
-        date[col+'_year'] = date[col].dt.year
-        date[col+'_month'] = date[col].dt.month
-        date[col+'_day'] = date[col].dt.day
+        data[col+'_year'] = data[col].dt.year
+        data[col+'_month'] = data[col].dt.month
+        data[col+'_day'] = data[col].dt.day
 
         data.drop(columns=[col], inplace=True)
         
@@ -50,47 +54,66 @@ def feature_engineering(data: pd.DataFrame) -> pd.DataFrame:
 def drop_irrelevant_columns(data: pd.DataFrame) -> pd.DataFrame:
     """Drops irrelevant columns"""
     data.drop(columns = ['Name', 'Email', 'Phone',
-                         'Address', 'Comment', 
-                         'Timestamp'], inplace = True)
+                         'Address', 'Comment'], inplace = True, errors='ignore')
     
     return data
     
     
     
 def encode_data(data: pd.DataFrame) -> pd.DataFrame:
-    ''' encodes data'''
-    nominal_columns = ['Gender', 'TotalInteractionType', 'Frequency']
-    ordinal_columns = ['Segment', 'Plan','customer_segments']
-    cardinal_columns = ['Location',  'ProductList', 'MostCommonAction', 
-                'LastPageVisited', 'FirstPageVisited', 'LastActionType', 'LeastFrequentAction']
+    """Encodes categorical data safely for inference."""
 
-    ohe = OneHotEncoder(sparse_output=False)
+    nominal_columns = ['Gender', 'TotalInteractionType', 'Frequency']
+    ordinal_columns = ['Segment', 'Plan', 'customer_segments']
+    cardinal_columns = [
+        'Location', 'ProductList', 'MostCommonAction',
+        'LastPageVisited', 'FirstPageVisited',
+        'LastActionType', 'LeastFrequentAction'
+    ]
 
     encode_data = data.copy()
+
+    # ---------- NOMINAL (OneHot) ----------
+    ohe = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
 
     encoded_columns = []
 
     for col in nominal_columns:
-        transformed_col = ohe.fit_transform(encode_data[[col]])
-        transformed_df = pd.DataFrame(transformed_col, columns = [f"{col}_{cat}" for cat in ohe.categories_[0]])
-        
-        encoded_columns.append(transformed_df)
-        
-    encode_data = pd.concat([encode_data] + encoded_columns, axis = 1)
-    encode_data.drop(columns = nominal_columns, inplace = True)
+        if col not in encode_data.columns:
+            continue  # 🔑 prevents KeyError
 
-    
-    
+        transformed_col = ohe.fit_transform(encode_data[[col]])
+        transformed_df = pd.DataFrame(
+            transformed_col,
+            columns=[f"{col}_{cat}" for cat in ohe.categories_[0]],
+            index=encode_data.index
+        )
+
+        encoded_columns.append(transformed_df)
+
+    if encoded_columns:
+        encode_data = pd.concat([encode_data] + encoded_columns, axis=1)
+
+    encode_data.drop(columns=[c for c in nominal_columns if c in encode_data.columns],
+                     inplace=True)
+
+    # ---------- ORDINAL (LabelEncode) ----------
     le = LabelEncoder()
 
     for col in ordinal_columns:
-        encode_data[col] = le.fit_transform(encode_data[col])
-        
+        if col not in encode_data.columns:
+            continue
+        encode_data[col] = le.fit_transform(encode_data[col].astype(str))
+
+    # ---------- CARDINAL (Target Encoding-style mean) ----------
     for col in cardinal_columns:
-        encode_data[col] = encode_data.groupby(col)['TotalPurchaseValue'].transform('mean')
-        
-    encode_data.to_csv('encoded_data2.csv', index = False)
-        
+        if col not in encode_data.columns:
+            continue
+        encode_data[col] = (
+            encode_data.groupby(col)['TotalPurchaseValue']
+            .transform('mean')
+        )
+
     return encode_data
 
         
@@ -109,4 +132,3 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
 
 
 
-   
