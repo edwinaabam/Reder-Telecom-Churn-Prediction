@@ -98,6 +98,15 @@ The application allows users to input customer attributes and receive churn pred
 
 ---
 
+## Running the API (Docker)
+docker build -t reder-churn-api .
+
+docker run -p 8000:8000 reder-churn-api
+
+## Running the Streamlit App (Local)
+streamlit run deploy/streamlit.py
+
+
 ## Notes
 This repository focuses on the implementation of customer churn prediction using machine learning. The project demonstrates how predictive analytics can be applied to real-world telecommunications challenges to support retention and strategic decision-making.
 
