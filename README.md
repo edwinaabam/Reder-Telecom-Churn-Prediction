@@ -98,10 +98,6 @@ The deployment consists of two components:
   A simple web interface that collects customer attributes and displays churn predictions.
 
 Both components are containerised and orchestrated using **Docker Compose**, allowing the full system to be started with a single command.
+
 ---
-## Running the Application (Docker Compose)
 
-Ensure Docker and Docker Compose are installed. From the project root, run:
-
-```bash
-docker compose up --build
