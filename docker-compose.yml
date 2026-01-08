@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  api:
+    image: reder-churn-api
+    container_name: reder-churn-api
+    ports:
+      - "8000:8000"
+
+  ui:
+    image: reder-churn-ui
+    container_name: reder-churn-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000/churn-predict
+    depends_on:
+      - api

@@ -1,10 +1,15 @@
 import streamlit as st
 import requests
 import json
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 st.title("Telecom Customer Churn Prediction")
 
-API_URL = "http://localhost:8000/churn-predict"
+API_URL = os.getenv("API_URL","http://localhost:8000/churn-predict")
 
 st.header("Customer Details")
 
