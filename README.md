@@ -105,9 +105,3 @@ Ensure Docker and Docker Compose are installed. From the project root, run:
 
 ```bash
 docker compose up --build
-
-
-
-
-
-
