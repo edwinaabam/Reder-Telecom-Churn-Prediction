@@ -75,18 +75,6 @@ Key aspects of the modelling process include:
 Planned and evaluated models include:
 - Logistic Regression  
 - Random Forest  
-
----
-
-## Deployment and Application
-An interactive application is developed to demonstrate churn predictions and support exploration by non-technical users.
-
-- **Frontend**: Streamlit interface for user interaction  
-- **Deployment**: Hosted on Hugging Face Spaces  
-- **Monitoring (optional)**: Visualisation of trends and model usage  
-
-The application allows users to input customer attributes and receive churn predictions in an accessible format.
-
 ---
 
 ## Technology Stack
@@ -95,18 +83,31 @@ The application allows users to input customer attributes and receive churn pred
 - **Streamlit** (interactive application)  
 - **Git & GitHub** (version control and collaboration)  
 - **Docker** (containerisation and deployment)  
-
 ---
 
-## Running the API (Docker)
-docker build -t reder-churn-api .
+## Deployment and Application
 
-docker run -p 8000:8000 reder-churn-api
+An interactive application is provided to demonstrate customer churn predictions and allow simple exploration of model outputs.
 
-## Running the Streamlit App (Local)
-streamlit run deploy/streamlit.py
+The deployment consists of two components:
+
+- **Prediction API (FastAPI)**  
+  Exposes the trained churn model via a REST endpoint.
+
+- **User Interface (Streamlit)**  
+  A simple web interface that collects customer attributes and displays churn predictions.
+
+Both components are containerised and orchestrated using **Docker Compose**, allowing the full system to be started with a single command.
+---
+## Running the Application (Docker Compose)
+
+Ensure Docker and Docker Compose are installed. From the project root, run:
+
+```bash
+docker compose up --build
 
 
-## Notes
-This repository focuses on the implementation of customer churn prediction using machine learning. The project demonstrates how predictive analytics can be applied to real-world telecommunications challenges to support retention and strategic decision-making.
+
+
+
 
