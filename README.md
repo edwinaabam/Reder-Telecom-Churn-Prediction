@@ -96,8 +96,5 @@ The deployment consists of two components:
 
 - **User Interface (Streamlit)**  
   A simple web interface that collects customer attributes and displays churn predictions.
-
-Both components are containerised and orchestrated using **Docker Compose**, allowing the full system to be started with a single command.
-
 ---
 
