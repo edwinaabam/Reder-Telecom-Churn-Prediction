@@ -1,6 +1,19 @@
 # Predicting Customer Churn  
 **Identifying Susceptible Customers in Telecommunications**
 
+
+---
+title: Reder Telecom Churn App
+emoji: 📡
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
+# Reder Telecom Churn Prediction
+This app predicts customer churn using a FastAPI backend and Streamlit frontend.
+
 ## Project Overview
 This project focuses on predicting customer churn for a telecommunications company, Reder Telecom. In a highly competitive market, customer retention is critical for revenue protection, marketing efficiency, and long-term customer satisfaction.
 
