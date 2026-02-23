@@ -6,7 +6,7 @@ import sys
 
 # 1. NEW: Load the model directly instead of using an API_URL
 # Make sure your model file is in a folder named 'models' in your repo
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'models', 'model.pkl')
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'model.pkl')
 
 @st.cache_resource  # This keeps the model in memory so it doesn't reload every time
 def load_my_model():

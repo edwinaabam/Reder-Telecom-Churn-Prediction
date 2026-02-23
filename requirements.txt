@@ -10,3 +10,4 @@ requests
 # Visuals (Keep if you plan to add charts)
 matplotlib
 seaborn
+joblib
