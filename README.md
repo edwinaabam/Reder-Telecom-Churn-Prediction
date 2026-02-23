@@ -1,13 +1,10 @@
-# Predicting Customer Churn  
-**Identifying Susceptible Customers in Telecommunications**
-
-
 ---
 title: Reder Telecom Churn App
 emoji: 📡
 colorFrom: blue
 colorTo: indigo
 sdk: docker
+app_port: 8501
 pinned: false
 ---
 
