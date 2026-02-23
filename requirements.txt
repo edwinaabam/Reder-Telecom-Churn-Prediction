@@ -7,6 +7,6 @@ pydantic
 python-dotenv
 streamlit
 requests
-ipykernel
+# Visuals (Keep if you plan to add charts)
 matplotlib
 seaborn
