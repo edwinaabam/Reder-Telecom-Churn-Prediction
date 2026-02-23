@@ -14,4 +14,4 @@ EXPOSE 8000
 EXPOSE 8501
 
 # Start the API in the background and then start Streamlit
-CMD uvicorn deploy.app:app --host 0.0.0.0 --port 8000 & python -m streamlit run deploy/streamlit_cloud.py --server.port 8501 --server.address 0.0.0.0
+CMD uvicorn deploy.app:app --host 0.0.0.0 --port 8000 & python -m streamlit run deploy/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
