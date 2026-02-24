@@ -6,6 +6,13 @@ import os
 import sys
 from PIL import Image
 
+# 1. PAGE CONFIG (This adds the Emoji to your Browser Tab)
+st.set_page_config(
+    page_title="Reder Churn Prediction",
+    page_icon="📡", # Your new emoji icon
+    layout="wide"
+)
+
 # 1. PATH FIX
 current_dir = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(current_dir, '..')))
