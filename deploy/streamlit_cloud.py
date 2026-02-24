@@ -4,34 +4,51 @@ import joblib
 import json
 import os
 import sys
+from PIL import Image
 
-# 1. FIX THE FOLDER PATH: This tells Python to look in the root folder for DataCleaning
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# 1. PATH FIX: Ensures DataCleaning is found from the 'deploy' subfolder
+current_dir = os.path.dirname(__file__)
+sys.path.append(os.path.abspath(os.path.join(current_dir, '..')))
 
 try:
     from DataCleaning.clean import clean_data
 except ModuleNotFoundError:
-    st.error("Could not find the DataCleaning module. Ensure the folder is in your GitHub root.")
+    st.error("Module 'DataCleaning' not found. Ensure it is in your GitHub root.")
 
 # --- NAVIGATION SIDEBAR ---
 with st.sidebar:
-    st.image("https://img.icons8.com/fluency/100/antenna.png") # Optional antenna icon
-    st.title("Navigation")
-    page = st.radio("Go to:", ["Churn Predictor", "About the Model", "Customer Insights"])
-    st.info("Reder Telecom v1.0")
+    # --- LOGO SECTION ---
+    # Load and display your logo from the deploy folder
+    try:
+        logo_path = os.path.join(current_dir, "radiologo.png") # Adjust extension if it's .jpg or .svg
+        logo = Image.open(logo_path)
+        st.image(logo, use_container_width=True)
+    except Exception:
+        st.warning("Logo file not found in 'deploy' folder.")
 
-# --- COLORED BANNER ---
-# This creates a thin, colored bar at the top
+    st.title("📡 Reder Menu")
+    
+    # Dropdown select menu
+    navigation = st.selectbox(
+        "Select Page",
+        ["Churn Predictor", "Model Metrics", "Settings"]
+    )
+    
+    # Expandable option list
+    with st.expander("ℹ️ App Information"):
+        st.write("This app uses a Random Forest model to analyze customer behavior and predict the likelihood of churn.")
+        st.write("**Version:** 1.0.3")
+
+# --- COLORED BANNER (NAVY BLUE) ---
 st.markdown("""
-    <div style="background-color:#FF4B4B; padding:10px; border-radius:5px; margin-bottom:20px;">
-        <h3 style="color:white; text-align:center; margin:0;">Reder Telecom Customer Churn Prediction</h3>
+    <div style="background-color:#002b5b; padding:15px; border-radius:10px; margin-bottom:25px;">
+        <h2 style="color:white; text-align:center; margin:0; font-family:sans-serif;">Reder Telecom Customer Churn Prediction</h2>
     </div>
     """, unsafe_allow_html=True)
 
-# 2. LOAD ASSETS
-# Adjusting paths to go up one level from 'deploy/' to find 'model/'
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'model.pkl')
-SCHEMA_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'schema.json')
+# 2. LOAD ASSETS (Model and Schema)
+MODEL_PATH = os.path.join(current_dir, '..', 'model', 'model.pkl')
+SCHEMA_PATH = os.path.join(current_dir, '..', 'model', 'schema.json')
 
 @st.cache_resource
 def load_all():
@@ -43,36 +60,34 @@ def load_all():
 try:
     model, feature_schema = load_all()
 except Exception as e:
-    st.error(f"Error loading model assets: {e}")
+    st.error(f"Error loading model/schema: {e}")
 
-# --- UI INPUTS (The part you keep) ---
-st.header("Enter Customer Information")
+# --- UI INPUTS ---
+st.subheader("Customer Data Entry")
 col1, col2 = st.columns(2)
 
 with col1:
-    age = st.number_input("Age", min_value=18, max_value=100, value=30)
+    age = st.number_input("Age", 18, 100, 30)
     gender = st.selectbox("Gender", ["Male", "Female"])
     plan = st.selectbox("Plan", ["Basic", "Express", "Premium"])
-    nps = st.number_input("NPS Score", min_value=0, max_value=10, value=5)
+    nps = st.slider("NPS Score", 0, 10, 5)
 
 with col2:
-    page_views = st.number_input("Page Views", min_value=0, value=20)
-    logins = st.number_input("Logins", min_value=0, value=5)
-    rating = st.number_input("Rating", min_value=1, max_value=5, value=3)
+    page_views = st.number_input("Page Views", 0, 1000, 20)
+    logins = st.number_input("Logins", 0, 100, 5)
+    rating = st.selectbox("Rating", [1, 2, 3, 4, 5], index=2)
 
 # --- PREDICTION LOGIC ---
-if st.button("Run Prediction"):
-    # Create the raw dataframe with your FastAPI-style keys
+if st.button("Calculate Churn Risk"):
     raw_data = pd.DataFrame([{
         "Age": age, "Gender": gender, "Plan": plan, "NPS": nps,
         "PageViews": page_views, "Logins": logins, "Rating": rating,
-        "Frequency": "weekly", "Recency_days": 30, # Default values for cleaning
+        "Frequency": "weekly", "Recency_days": 30, 
         "ActionsLast30Days": 5, "num_calls": 1
     }])
 
     try:
-        with st.spinner("Processing through DataCleaning pipeline..."):
-            # Clean and reindex to match what the model saw at fit time
+        with st.spinner("Processing data..."):
             cleaned_data = clean_data(raw_data)
             final_input = cleaned_data.reindex(columns=feature_schema, fill_value=0)
 
@@ -80,11 +95,17 @@ if st.button("Run Prediction"):
             proba = model.predict_proba(final_input)[0][1]
 
             st.markdown("---")
-            st.metric("Risk of Churn", f"{proba:.2%}")
-
+            st.write("### Analysis Result")
+            
+            res1, res2 = st.columns(2)
+            res1.metric("Churn Probability", f"{proba:.2%}")
+            
             if prediction == 1:
-                st.error("⚠️ HIGH RISK: This customer is likely to churn.")
+                res2.error("Result: CHURN RISK")
+                st.warning("Recommendation: Contact customer for loyalty offer.")
             else:
-                st.success("✅ LOW RISK: This customer is likely to stay.")
+                res2.success("Result: STABLE")
+                st.info("Customer sentiment appears positive.")
+                
     except Exception as e:
-        st.error(f"Pipeline Error: {e}")
+        st.error(f"Prediction Error: {e}")
