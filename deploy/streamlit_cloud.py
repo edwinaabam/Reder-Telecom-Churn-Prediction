@@ -15,13 +15,13 @@ try:
 except ModuleNotFoundError:
     st.error("Module 'DataCleaning' not found.")
 
-# --- CUSTOM CSS FOR SLIM BANNER ---
+# --- CUSTOM CSS FOR SLIM BUTTON & CLEAN TEXT ---
 st.markdown("""
     <style>
     /* Ultra-Slim Banner */
     .slim-banner {
         background-color: #4A90E2;
-        padding: 5px 0px; /* Very thin padding */
+        padding: 5px 0px;
         border-radius: 4px;
         margin-bottom: 10px;
         width: 100%;
@@ -31,37 +31,44 @@ st.markdown("""
         text-align: center;
         margin: 0;
         font-family: sans-serif;
-        font-size: 1.3rem; /* Large enough to read, small enough to stay slim */
-        font-weight: 800;   /* Bold */
+        font-size: 1.3rem;
+        font-weight: 800;
     }
     
-    /* Remove sidebar top padding to align logo better */
-    [data-testid="stSidebarNav"] {display: none;}
+    /* Make the Predict Button transparent and small */
+    div.stButton > button {
+        background-color: transparent !important;
+        color: #4A90E2 !important;
+        border: 1px solid #4A90E2 !important;
+        padding: 5px 20px !important;
+        font-weight: 500 !important;
+        border-radius: 5px !important;
+        display: block;
+        margin: 0 auto; /* Centers the button */
+    }
+    div.stButton > button:hover {
+        background-color: #4A90E2 !important;
+        color: white !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR (ONLY FOR LOGO) ---
+# --- SIDEBAR (LOGO) ---
 with st.sidebar:
     try:
-        logo_path = os.path.join(current_dir, "telecomlogo.png") 
+        logo_path = os.path.join(current_dir, "telelogo.png") 
         st.image(Image.open(logo_path), use_container_width=True)
     except:
         st.markdown("<h3 style='color: #4A90E2;'>📡 REDER</h3>", unsafe_allow_html=True)
 
 # --- SLIM BOLD BANNER ---
-st.markdown(f"""
-    <div class="slim-banner">
-        <p class="banner-text">REDER TELECOM CHURN PREDICTION</p>
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown(f"""<div class="slim-banner"><p class="banner-text">REDER TELECOM CHURN PREDICTION</p></div>""", unsafe_allow_html=True)
 
-# --- HORIZONTAL TABS (The Navigation) ---
-# This places the menu nicely below the banner
-tab1, tab2, tab3 = st.tabs(["📊 Churn Predictor", "📈 Model Metrics", "ℹ️ About App"])
+# --- NAVIGATION TABS ---
+tab1, tab2, tab3 = st.tabs(["📊 Predictor", "📈 Metrics", "ℹ️ About"])
 
-# --- PAGE CONTENT LOGIC ---
 with tab1:
-    st.markdown("### Customer Analysis")
+    st.markdown("### Customer Details")
     
     # LOAD ASSETS
     MODEL_PATH = os.path.join(current_dir, '..', 'model', 'model.pkl')
@@ -74,10 +81,7 @@ with tab1:
             schema = json.load(f)
         return model, schema["model_schema"]
 
-    try:
-        model, feature_schema = load_all()
-    except Exception as e:
-        st.error(f"Asset Load Error: {e}")
+    model, feature_schema = load_all()
 
     col1, col2 = st.columns(2)
     with col1:
@@ -90,13 +94,17 @@ with tab1:
         logins = st.number_input("Logins", 0, 100, 5)
         rating = st.selectbox("Customer Rating", [1, 2, 3, 4, 5], index=2)
 
-    if st.button("🚀 Run Prediction", type="primary", use_container_width=True):
+    st.markdown("<br>", unsafe_allow_html=True) # Adding a little space
+    
+    # PREDICTION BUTTON (Now small, centered, and transparent)
+    if st.button("Analyze Customer"):
         raw_data = pd.DataFrame([{
             "Age": age, "Gender": gender, "Plan": plan, "NPS": nps,
             "PageViews": page_views, "Logins": logins, "Rating": rating,
             "Frequency": "weekly", "Recency_days": 30, 
             "ActionsLast30Days": 5, "num_calls": 1
         }])
+        
         try:
             with st.spinner("Analyzing..."):
                 cleaned_data = clean_data(raw_data)
@@ -105,22 +113,25 @@ with tab1:
                 proba = model.predict_proba(final_input)[0][1]
                 
                 st.markdown("---")
-                res1, res2 = st.columns(2)
-                res1.metric("Risk Score", f"{proba:.2%}")
+                
+                # CLEAN STATUS MESSAGES
                 if prediction == 1:
-                    res2.error("Status: AT RISK")
+                    st.markdown(f"<h3 style='color: #D32F2F; text-align: center;'>🚩 High Churn Risk: {proba:.1%}</h3>", unsafe_allow_html=True)
+                    st.markdown("<p style='text-align: center;'>This customer is likely to churn. Intervention recommended.</p>", unsafe_allow_html=True)
                 else:
-                    res2.success("Status: STABLE")
+                    st.markdown(f"<h3 style='color: #388E3C; text-align: center;'>✅ Healthy Status: {proba:.1%}</h3>", unsafe_allow_html=True)
+                    st.markdown("<p style='text-align: center;'>This customer is stable. No action needed.</p>", unsafe_allow_html=True)
+
         except Exception as e:
-            st.error(f"Prediction Error: {e}")
+            st.error(f"Error: {e}")
 
 with tab2:
-    st.markdown("### Model Performance")
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Accuracy", "89%")
-    m2.metric("Precision", "84%")
-    m3.metric("Recall", "81%")
+    st.markdown("### Performance Metrics")
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Accuracy", "89%")
+    col2.metric("Precision", "84%")
+    col3.metric("Recall", "81%")
 
 with tab3:
-    st.markdown("### About the System")
-    st.write("This tool identifies at-risk customers for Reder Telecom using behavior analytics.")
+    st.markdown("### System Info")
+    st.write("Real-time behavioral churn prediction for Reder Telecom.")
