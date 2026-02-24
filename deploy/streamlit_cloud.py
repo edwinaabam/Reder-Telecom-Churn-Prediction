@@ -43,10 +43,10 @@ st.markdown("""
         width: 100%;
         
         /* Using PX instead of REM to force size */
-        font-size: 60px !important; 
+        font-size: 30px !important; 
         
         /* Extra Bold */
-        font-weight: 900 !important;
+        font-weight: 500 !important;
         
         /* Spacing and Legibility */
         letter-spacing: 4px !important;
