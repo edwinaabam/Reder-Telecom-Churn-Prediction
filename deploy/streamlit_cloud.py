@@ -64,7 +64,7 @@ st.markdown("""
 # --- FUNCTIONAL SIDEBAR ---
 with st.sidebar:
     try:
-        logo_path = os.path.join(current_dir, "telecomlogo.jpg") 
+        logo_path = os.path.join(current_dir, "telecomlogo.png") 
         st.image(Image.open(logo_path), use_container_width=True)
     except:
         st.markdown("<h2 style='text-align:center;'>📡 REDER</h2>", unsafe_allow_html=True)
