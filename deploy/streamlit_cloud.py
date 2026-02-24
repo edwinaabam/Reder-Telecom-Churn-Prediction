@@ -15,31 +15,41 @@ try:
 except ModuleNotFoundError:
     st.error("Module 'DataCleaning' not found.")
 
-# --- CUSTOM CSS FOR LIGHTER THEME ---
+# --- CUSTOM CSS FOR CLEAN LINKS & BOLD BANNER ---
 st.markdown("""
     <style>
-    /* Styled Sidebar buttons */
-    .stButton>button {
-        width: 100%;
-        border-radius: 8px;
-        border: 1px solid #4A90E2;
-        background-color: white;
-        color: #4A90E2;
-        font-weight: 500;
-        transition: 0.3s;
+    /* 1. Remove Button Styling to make them look like simple list items */
+    div.stButton > button {
+        border: none !important;
+        background-color: transparent !important;
+        color: #4A90E2 !important;
+        text-align: left !important;
+        padding: 0px !important;
+        font-size: 18px !important;
+        font-weight: 500 !important;
+        box-shadow: none !important;
     }
-    .stButton>button:hover {
-        background-color: #4A90E2;
-        color: white;
+    div.stButton > button:hover {
+        color: #002b5b !important;
+        text-decoration: underline !important;
     }
     
-    /* Lighter Steel Blue Banner */
+    /* 2. Bold and Bigger Banner Title */
     .custom-banner {
-        background-color: #4A90E2; /* Lighter Blue */
-        padding: 6px;
-        border-radius: 6px;
+        background-color: #4A90E2;
+        padding: 12px;
+        border-radius: 8px;
         margin-bottom: 25px;
         width: 100%;
+    }
+    .banner-text {
+        color: white;
+        text-align: center;
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 1.8rem; /* Bigger font */
+        font-weight: 800;   /* Extra Bold */
+        text-transform: uppercase; /* Makes it punchy */
     }
     </style>
     """, unsafe_allow_html=True)
@@ -48,17 +58,17 @@ st.markdown("""
 with st.sidebar:
     # LOGO
     try:
-        logo_path = os.path.join(current_dir, "telecomlogo.jpg") 
+        logo_path = os.path.join(current_dir, "logo.png") 
         st.image(Image.open(logo_path), use_container_width=True)
     except:
-        st.markdown("<h2 style='text-align: center; color: #4A90E2;'>📡 Reder</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #4A90E2;'>📡 Reder</h2>", unsafe_allow_html=True)
 
-    st.markdown("---")
+    st.markdown("### Navigation")
     
     if "page" not in st.session_state:
         st.session_state.page = "Churn Predictor"
 
-    # Clean Menu Buttons
+    # These now look like clean list items instead of buttons
     if st.button("📊 Churn Predictor"):
         st.session_state.page = "Churn Predictor"
     
@@ -68,18 +78,16 @@ with st.sidebar:
     if st.button("ℹ️ About this app"):
         st.session_state.page = "About this app"
 
-# --- UNIFORM LIGHTER BANNER ---
+# --- BIG BOLD UNIFORM BANNER ---
 st.markdown(f"""
     <div class="custom-banner">
-        <h3 style="color:white; text-align:center; margin:0; font-family:sans-serif; font-size:1rem; font-weight:500; letter-spacing: 0.5px;">
-            Reder Telecom Customer Churn Prediction
-        </h3>
+        <h1 class="banner-text">REDER TELECOM CHURN PREDICTION</h1>
     </div>
     """, unsafe_allow_html=True)
 
 # 2. PAGE CONTENT LOGIC
 if st.session_state.page == "Churn Predictor":
-    st.markdown("### Customer Behavior Analysis")
+    st.markdown("### Customer Analysis")
     
     # Pathing for model files
     MODEL_PATH = os.path.join(current_dir, '..', 'model', 'model.pkl')
@@ -103,13 +111,13 @@ if st.session_state.page == "Churn Predictor":
         age = st.number_input("Age", 18, 100, 30)
         gender = st.selectbox("Gender", ["Male", "Female"])
         plan = st.selectbox("Plan", ["Basic", "Express", "Premium"])
-        nps = st.slider("NPS Score (0-10)", 0, 10, 5)
+        nps = st.slider("NPS Score", 0, 10, 5)
     with col2:
         page_views = st.number_input("Page Views", 0, 1000, 20)
         logins = st.number_input("Logins", 0, 100, 5)
         rating = st.selectbox("Customer Rating", [1, 2, 3, 4, 5], index=2)
 
-    if st.button("Run Prediction", type="primary"):
+    if st.button("🚀 Run Prediction", type="primary"):
         raw_data = pd.DataFrame([{
             "Age": age, "Gender": gender, "Plan": plan, "NPS": nps,
             "PageViews": page_views, "Logins": logins, "Rating": rating,
@@ -117,7 +125,7 @@ if st.session_state.page == "Churn Predictor":
             "ActionsLast30Days": 5, "num_calls": 1
         }])
         try:
-            with st.spinner("Processing..."):
+            with st.spinner("Analyzing..."):
                 cleaned_data = clean_data(raw_data)
                 final_input = cleaned_data.reindex(columns=feature_schema, fill_value=0)
                 prediction = model.predict(final_input)[0]
@@ -135,12 +143,8 @@ if st.session_state.page == "Churn Predictor":
 
 elif st.session_state.page == "Model Metrics":
     st.markdown("### Model Performance")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Accuracy", "89%")
-    col2.metric("Precision", "84%")
-    col3.metric("Recall", "81%")
+    # Content...
 
 elif st.session_state.page == "About this app":
     st.markdown("### About the System")
-    st.write("This platform is built to provide Reder Telecom with data-driven insights to reduce churn.")
-    st.info("System uses Random Forest classification with real-time feature engineering.")
+    # Content...
