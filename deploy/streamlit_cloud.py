@@ -27,33 +27,36 @@ st.markdown("""
     <style>
     .balanced-banner {
         background: linear-gradient(90deg, #4A90E2 0%, #5DA5F5 100%);
-        padding: 45px 20px; /* Slightly adjusted for extra "breathability" */
+        padding: 40px 20px; 
         border-radius: 12px;
         margin-bottom: 30px;
         width: 100%;
-        box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
         display: flex;
         justify-content: center;
         align-items: center;
+        box-sizing: border-box;
     }
     
     .banner-text {
-        color: white;
-        text-align: center;
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, sans-serif;
+        color: white !important;
+        text-align: center !important;
+        width: 100%;
         
-        /* Font Size increased to match the 45px padding */
-        font-size: 3.2rem; 
+        /* Using PX instead of REM to force size */
+        font-size: 60px !important; 
         
-        font-weight: 800;
+        /* Extra Bold */
+        font-weight: 900 !important;
         
-        /* Spacing adjusted so wide text looks premium */
-        letter-spacing: 5px; 
+        /* Spacing and Legibility */
+        letter-spacing: 4px !important;
+        text-transform: uppercase !important;
+        font-family: 'Arial Black', sans-serif !important;
         
-        text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-        text-transform: uppercase;
-        line-height: 1;
+        /* Ensure no extra margins are shrinking the text */
+        margin: 0 !important;
+        line-height: 1.2 !important;
+        text-shadow: 3px 3px 10px rgba(0,0,0,0.3);
     }
     </style>
     """, unsafe_allow_html=True)
