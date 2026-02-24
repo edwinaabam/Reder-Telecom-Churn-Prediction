@@ -2,12 +2,14 @@ fastapi
 uvicorn
 pandas
 numpy
-scikit-learn
 pydantic
 python-dotenv
-streamlit
 requests
 # Visuals (Keep if you plan to add charts)
 matplotlib
 seaborn
+streamlit>=1.31.0
+altair<5.0.0
+pandas
 joblib
+scikit-learn
