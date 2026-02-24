@@ -25,10 +25,9 @@ except ModuleNotFoundError:
 # --- CUSTOM CSS ---
 st.markdown("""
     <style>
-    /* Adjusted Banner - Not too thick, not too slim */
     .balanced-banner {
         background-color: #4A90E2;
-        padding: 15px 0px; /* Increased from 5px to 15px for better presence */
+        padding: 15px 0px; 
         border-radius: 8px;
         margin-bottom: 20px;
         width: 100%;
@@ -39,27 +38,13 @@ st.markdown("""
         text-align: center;
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 1.6rem; /* Slightly larger for the bold look */
+        font-size: 2.2rem; /* <--- INCREASED THIS FROM 1.6rem */
         font-weight: 800;
-        letter-spacing: 1px;
+        letter-spacing: 2px; /* Increased spacing slightly for better readability */
+        line-height: 1.2;
     }
     
-    /* Transparent Predict Button */
-    div.stButton > button {
-        background-color: transparent !important;
-        color: #4A90E2 !important;
-        border: 2px solid #4A90E2 !important;
-        padding: 10px 30px !important;
-        font-weight: 700 !important;
-        border-radius: 25px !important;
-        display: block;
-        margin: 0 auto;
-        transition: 0.3s;
-    }
-    div.stButton > button:hover {
-        background-color: #4A90E2 !important;
-        color: white !important;
-    }
+    /* ... keep the rest of your button CSS here ... */
     </style>
     """, unsafe_allow_html=True)
 
