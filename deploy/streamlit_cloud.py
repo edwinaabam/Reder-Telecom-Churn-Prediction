@@ -58,7 +58,7 @@ st.markdown("""
 with st.sidebar:
     # LOGO
     try:
-        logo_path = os.path.join(current_dir, "logo.png") 
+        logo_path = os.path.join(current_dir, "telecomlogo.png") 
         st.image(Image.open(logo_path), use_container_width=True)
     except:
         st.markdown("<h2 style='color: #4A90E2;'>📡 Reder</h2>", unsafe_allow_html=True)
