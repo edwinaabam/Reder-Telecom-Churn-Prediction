@@ -26,25 +26,34 @@ except ModuleNotFoundError:
 st.markdown("""
     <style>
     .balanced-banner {
-        background-color: #4A90E2;
-        padding: 15px 0px; 
-        border-radius: 8px;
-        margin-bottom: 20px;
+        /* Lighter Steel Blue with a subtle gradient for depth */
+        background: linear-gradient(90deg, #4A90E2 0%, #5DA5F5 100%);
+        
+        /* Padding increased to ~40px for that 50% wider feel */
+        padding: 40px 20px; 
+        
+        border-radius: 12px;
+        margin-bottom: 30px;
         width: 100%;
-        box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+        box-sizing: border-box;
+        box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
+    
     .banner-text {
         color: white;
         text-align: center;
         margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 3.4rem; /* <--- INCREASED THIS FROM 1.6rem */
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        font-size: 2.8rem; /* Scaled up to match the wider banner */
         font-weight: 800;
-        letter-spacing: 2px; /* Increased spacing slightly for better readability */
-        line-height: 1.2;
+        letter-spacing: 3px;
+        /* Subtle shadow to make the white text "pop" against the blue */
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        text-transform: uppercase;
     }
-    
-    /* ... keep the rest of your button CSS here ... */
     </style>
     """, unsafe_allow_html=True)
 
