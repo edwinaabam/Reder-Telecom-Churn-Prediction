@@ -27,9 +27,9 @@ st.markdown("""
     <style>
     .balanced-banner {
         background: linear-gradient(90deg, #4A90E2 0%, #5DA5F5 100%);
-        padding: 40px 20px; 
+        padding: 20px 20px; 
         border-radius: 12px;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         width: 100%;
         display: flex;
         justify-content: center;
