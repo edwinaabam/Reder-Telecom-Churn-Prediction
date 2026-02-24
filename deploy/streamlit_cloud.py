@@ -38,7 +38,7 @@ st.markdown("""
         text-align: center;
         margin: 0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 2.2rem; /* <--- INCREASED THIS FROM 1.6rem */
+        font-size: 3.4rem; /* <--- INCREASED THIS FROM 1.6rem */
         font-weight: 800;
         letter-spacing: 2px; /* Increased spacing slightly for better readability */
         line-height: 1.2;
