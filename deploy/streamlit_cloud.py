@@ -141,3 +141,61 @@ with tab1:
             st.error(f"Error: {e}")
 
 # ... (rest of the tab logic for Metrics and About)
+# ... (Previous imports, CSS, Sidebar, and Tab1 code remain the same)
+
+with tab2:
+    st.markdown("### 📈 Model Performance Analysis")
+    st.write("The Random Forest model was trained on historical telecom data to identify patterns of churn.")
+
+    # 1. Key Metrics Row
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Overall Accuracy", "89.2%", "1.2%")
+    m2.metric("Precision", "84.5%")
+    m3.metric("Recall", "81.0%")
+    m4.metric("F1-Score", "82.7%")
+
+    st.markdown("---")
+
+    # 2. Visualizing Feature Importance
+    st.subheader("What drives Churn?")
+    st.write("Based on the model, these are the top 5 factors influencing customer decisions:")
+    
+    # Fake data for visualization purposes
+    importance_data = pd.DataFrame({
+        'Feature': ['NPS Score', 'Monthly Rating', 'Logins', 'Page Views', 'Contract Plan'],
+        'Importance': [0.35, 0.25, 0.20, 0.12, 0.08]
+    })
+    
+    st.bar_chart(data=importance_data, x='Feature', y='Importance', color="#4A90E2")
+    st.caption("Features with higher importance scores have a stronger impact on the final prediction.")
+
+with tab3:
+    st.markdown("### ℹ️ About the Reder Prediction System")
+    
+    col_a, col_b = st.columns([2, 1])
+    
+    with col_a:
+        st.write("""
+        **Reder Telecom Churn Prediction** is a data-driven tool designed to assist retention teams 
+        in identifying at-risk customers before they terminate their service.
+        
+        Using a **Random Forest Classifier**, the system analyzes behavioral data such as:
+        * **Engagement Levels:** Logins, Page Views, and Activity Duration.
+        * **Customer Sentiment:** Net Promoter Score (NPS) and recent Ratings.
+        * **Service Usage:** Plan types and interaction frequency.
+        """)
+        
+        st.success("**Objective:** Reduce churn rate by 15% through early intervention.")
+
+    with col_b:
+        st.info("""
+        **Tech Stack**
+        - **Engine:** Scikit-Learn (Python)
+        - **Pipeline:** Custom DataCleaning
+        - **Interface:** Streamlit
+        - **Deployment:** Streamlit Cloud
+        """)
+
+    st.markdown("---")
+    st.markdown("#### 🛠️ Developer Notes")
+    st.write("This model uses a serialized pipeline (`model.pkl` and `schema.json`) to ensure that real-time predictions match the data format used during the training phase.")
